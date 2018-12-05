@@ -1,7 +1,7 @@
 # @hotpack/parser #
 A es6 module parser
 
-[![Build Status](https://travis-ci.org/duhongwei/hotpack.svg?branch=master)](https://travis-ci.org/duhongwei/perser)
+[![Build Status](https://travis-ci.org/duhongwei/parser.svg?branch=master)](https://travis-ci.org/duhongwei/perser)
 [![Coverage Status](https://coveralls.io/repos/github/duhongwei/parser/badge.svg?branch=master)](https://coveralls.io/github/duhongwei/parser?branch=master)
 
 ## examples ##
