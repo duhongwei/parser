@@ -1,4 +1,4 @@
-# @hotpack/parser #
+# @duhongwei/parser #
 A es6 module parser
 
 [![Build Status](https://travis-ci.org/duhongwei/parser.svg?branch=master)](https://travis-ci.org/duhongwei/perser)
