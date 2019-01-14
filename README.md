@@ -20,3 +20,4 @@ let {importInfo}=parser.parse()
 //importInfo [{type:'djs',file:'a.js',tokens:null}]
 //code load('a.js')
 ```
+welcome to my blog [https://www.duhongwei.site](https://www.duhongwei.site)
