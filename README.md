@@ -9,7 +9,7 @@ A es6 module parser
 ```js
 const Parser=require('@duhongwei/parser')
 let parser=new Parser('import a from "a.js";let a=1;export {a};')
-let {importInfo,code}=parser.parse()
+let {importInfo,exportInfo,code}=parser.parse()
 //importInfo [{type:'js',file:'a.js',tokens:[{from:'default',to:'a'}] }]
 //exportInfo [{from:'a',to:'a'}]
 //code let a=1;
