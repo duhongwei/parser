@@ -1,4 +1,5 @@
-const { Es6} = require('../index.js')
+
+const { Es6 } = require('../index.js')
 const assert = require('assert')
 describe('fromEs6', () => {
   describe('parse import', () => {
@@ -194,12 +195,16 @@ describe('fromEs6', () => {
 
     })
     it('replace import with replacer ', () => {
-      const fromEs6 = new Es6("let x=1;import('a').then(()=>{})", { dynamicImportReplacer: `load('/vue/a')` })
+      const fromEs6 = new Es6("let x=1;import('a').then(()=>{})", {
+        dynamicImportKeyConvert: (key) => {
+          return `views/${key}`
+        }, dynamicImportReplacer: `load`
+      })
       let from = fromEs6.parse()
       let to = {
         exportInfo: [],
         importInfo: [{ type: 'djs', file: 'a', token: null }],
-        code: `let x=1;load('/vue/a').then(()=>{})`
+        code: `let x=1;load("views/a").then(()=>{})`
       }
       assert.deepEqual(from, to)
     })

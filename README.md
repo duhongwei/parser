@@ -8,17 +8,17 @@ A es6 module parser
 
 ```js
 const parser=require('@duhongwei/parser')
-let parser=new parser.Es6('import a from "a.js";let a=1;export {a};')
-let {importInfo,exportInfo,code}=parser.parse()
+let es6Parser=new parser.Es6('import a from "a.js";let a=1;export {a};')
+let {importInfo,exportInfo,code}=es6Parser.parse()
 //importInfo [{type:'js',file:'a.js',tokens:[{from:'default',to:'a'}] }]
 //exportInfo [{from:'a',to:'a'}]
 //code let a=1;
 
 //dynamic Import,simply repalce 'import' with a function name
-parser=new parser.Es6('import("a.js")',{dynamicImportReplacer: `load('views/a.js`})
+es6Parser=new parser.Es6('import("a.js")',{dynamicImportReplacer: `load`,dynamicImportKeyConvert: (key) => {return `views/${key}`}})
 let {importInfo}=parser.parse()
 //importInfo [{type:'djs',file:'a.js',tokens:null}]
-//code load('views/a.js')
+//code load("views/a.js")
 ```
 it can also parse cmd module.
 

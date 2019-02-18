@@ -15,9 +15,12 @@ base.Import = () => { }
 
 module.exports = class {
   constructor(code, opts = {}) {
+    //ast里面，raw ,value的不同为 如果是string ,raw是 "'a'",value 是 "a"
     this.ast = dynamicAcorn.parse(code, { sourceType: 'module' })
 
     this.dynamicImportReplacer = opts.dynamicImportReplacer
+    this.dynamicImportKeyConvert = opts.dynamicImportKeyConvert
+
     this.exportAllCb = opts.exportAllCb
     this.code = code
     this.delPosition = []
@@ -107,7 +110,10 @@ module.exports = class {
             file: node.arguments[0].value,
             token: null
           })
-          that.delPosition.push([node.callee.start, node.end, that.dynamicImportReplacer])
+          that.delPosition.push([node.callee.start, node.callee.end, that.dynamicImportReplacer])
+          if (that.dynamicImportKeyConvert) {
+            that.delPosition.push([node.arguments[0].start, node.arguments[0].end, `"${that.dynamicImportKeyConvert(node.arguments[0].value)}"`])
+          }
         }
       }
     })
