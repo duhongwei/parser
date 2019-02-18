@@ -6,7 +6,7 @@ const acorn = require('acorn')
 const walk = require('acorn-walk')
 
 module.exports = class {
-  constructor(code, opts = {}) {
+  constructor(code) {
     this.ast = acorn.parse(code)
     this.code = code
     this.delPosition = []

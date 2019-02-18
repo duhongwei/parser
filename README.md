@@ -7,17 +7,19 @@ A es6 module parser
 ## examples ##
 
 ```js
-const Parser=require('@duhongwei/parser')
-let parser=new Parser('import a from "a.js";let a=1;export {a};')
+const parser=require('@duhongwei/parser')
+let parser=new parser.Es6('import a from "a.js";let a=1;export {a};')
 let {importInfo,exportInfo,code}=parser.parse()
 //importInfo [{type:'js',file:'a.js',tokens:[{from:'default',to:'a'}] }]
 //exportInfo [{from:'a',to:'a'}]
 //code let a=1;
 
 //dynamic Import,simply repalce 'import' with a function name
-parser=new Parser('import("a.js")',{dynamicImportReplacer: 'load'})
+parser=new parser.Es6('import("a.js")',{dynamicImportReplacer: `load('views/a.js`})
 let {importInfo}=parser.parse()
 //importInfo [{type:'djs',file:'a.js',tokens:null}]
-//code load('a.js')
+//code load('views/a.js')
 ```
+it can also parse cmd module.
+
 welcome to my blog [https://www.duhongwei.site](https://www.duhongwei.site)
