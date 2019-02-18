@@ -1,3 +1,6 @@
+/**
+ * parse es6 module
+ */
 const dynamicImport = require('acorn-dynamic-import').default
 const acorn = require('acorn')
 const acornWalk = require('acorn-walk')
@@ -13,7 +16,7 @@ base.Import = () => { }
 module.exports = class {
   constructor(code, opts = {}) {
     this.ast = dynamicAcorn.parse(code, { sourceType: 'module' })
-    
+
     this.dynamicImportReplacer = opts.dynamicImportReplacer
     this.exportAllCb = opts.exportAllCb
     this.code = code
@@ -48,7 +51,7 @@ module.exports = class {
     let end = 0
 
     const delPosition = this.delPosition.sort((a, b) => {
-      
+
       if (a[0] > b[1]) {
         return 1
       }
@@ -104,7 +107,7 @@ module.exports = class {
             file: node.arguments[0].value,
             token: null
           })
-          that.delPosition.push([node.callee.start, node.callee.end, that.dynamicImportReplacer])
+          that.delPosition.push([node.callee.start, node.end, that.dynamicImportReplacer])
         }
       }
     })
@@ -145,7 +148,7 @@ module.exports = class {
           exportList = exportList.concat(result)
         }
       },
-      
+
       ExportAllDeclaration(node) {
         that.delPosition.push([node.start, node.end])
         if (!that.exportAllCb) {
