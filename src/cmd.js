@@ -18,12 +18,12 @@ module.exports = class {
   }
   parse() {
     //检查这个脚本是否为引导脚本。
-    let realFile = this._checkIf()
+    /* let realFile = this._checkIf()
     if (realFile) {
       return {
         link: realFile
       }
-    }
+    } */
     const importInfo = this._parseImport()
     let exportInfo = this._parseExport()
 

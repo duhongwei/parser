@@ -55,7 +55,7 @@ describe('parse common js', () => {
     })
    
   })
-  describe('parse if require', () => {
+  /* describe('parse if require', () => {
     it('if exports', () => {
       const fromCmd = new Cmd(`
       const a=require('./a')
@@ -74,5 +74,5 @@ describe('parse common js', () => {
 
     })
 
-  })
+  }) */
 })
