@@ -13,6 +13,9 @@ module.exports = class {
   constructor(code) {
     this.ast = acorn.parse(code)
     debug(JSON.stringify(this.ast, null, 2))
+    if (!code) { 
+      throw new Error('code requireed')
+    }
     this.code = code
     this.delPosition = []
   }
