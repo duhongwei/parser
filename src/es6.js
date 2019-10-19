@@ -88,6 +88,9 @@ module.exports = class {
           if (file.endsWith('.css')) {
             type = 'css'
           }
+          if (file.endsWith('.less')) {
+            type = 'less'
+          }
         }
         if (type === 'js' && token.length === 0) {
           throw new Error('no support "import module"')

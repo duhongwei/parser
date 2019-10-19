@@ -1,12 +1,17 @@
 {
   "name": "@q/parser",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "eslint ./src &&nyc --reporter=html --reporter=text mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
+  "maintainers": [
+    {
+      "name": "duhongwei"
+    }
+  ],
   "keywords": [
     "es6",
     "module",
