@@ -91,8 +91,11 @@ module.exports = class {
           if (file.endsWith('.less')) {
             type = 'less'
           }
+          if (file.endsWith('.ts')) {
+            type = 'ts'
+          }
         }
-        if (type === 'js' && token.length === 0) {
+        if ((type === 'js' || type === 'ts') && token.length === 0) {
           throw new Error('no support "import module"')
         }
         importInfo.push({
