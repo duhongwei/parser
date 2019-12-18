@@ -55,7 +55,7 @@ module.exports = class {
 
     const delPosition = this.delPosition.sort((a, b) => {
 
-      if (a[0] > b[1]) {
+      if (a[0] >= b[1]) {
         return 1
       }
       else {
@@ -63,7 +63,9 @@ module.exports = class {
       }
     })
     for (const item of delPosition) {
+      
       end = item[0]
+      
       code += this.code.slice(start, end)
       start = item[1]
       if (item[2]) {
@@ -91,11 +93,9 @@ module.exports = class {
           if (file.endsWith('.less')) {
             type = 'less'
           }
-          if (file.endsWith('.ts')) {
-            type = 'ts'
-          }
+
         }
-        if ((type === 'js' || type === 'ts') && token.length === 0) {
+        if (type === 'js' && token.length === 0) {
           throw new Error('no support "import module"')
         }
         importInfo.push({
@@ -123,6 +123,7 @@ module.exports = class {
         }
       }
     })
+
     return importInfo
   }
   _parseExport() {
