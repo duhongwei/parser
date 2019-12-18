@@ -54,7 +54,8 @@ module.exports = class {
     let end = 0
 
     const delPosition = this.delPosition.sort((a, b) => {
-
+      //[ [ 18, 35 ], [ 0, 18 ] ]
+      //必须有等号，不然上面的例子会失败
       if (a[0] >= b[1]) {
         return 1
       }
