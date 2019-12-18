@@ -63,9 +63,9 @@ module.exports = class {
       }
     })
     for (const item of delPosition) {
-      
+
       end = item[0]
-      
+
       code += this.code.slice(start, end)
       start = item[1]
       if (item[2]) {
