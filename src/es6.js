@@ -15,33 +15,31 @@ base.Import = () => { }
 
 module.exports = class {
   constructor(code, opts = {}) {
-    //ast里面，raw ,value的不同为 如果是string ,raw是 "'a'",value 是 "a"
+    //ast里面，raw ,value的不同之外是： 如果是string ,raw是 "'a'",value 是 "a"
     this.ast = dynamicAcorn.parse(code, { sourceType: 'module' })
-
     this.dynamicImportReplacer = opts.dynamicImportReplacer
-    this.dynamicImportKeyConvert = opts.dynamicImportKeyConvert
-
     this.exportAllCb = opts.exportAllCb
+    this.convertKey = opts.convertKey || function (key) { return key }
     this.code = code
     this.delPosition = []
   }
   parse() {
-    const importInfo = this._parseImport()
-
+    const { importInfo, dynamicImportInfo } = this._parseImport()
     let exportInfo = this._parseExport()
     const mergeInfo = this._parseExportFromImport()
-
     const code = this._delCode()
-
     for (const item of mergeInfo) {
       importInfo.push({
-        type: 'js',
-        file: item.file,
+        key: item.key,
         token: item.importToken
       })
       exportInfo = exportInfo.concat(item.exportToken)
     }
+    for (const item of importInfo) {
+      item.key = this.convertKey(item.key)
+    }
     return {
+      dynamicImportInfo,
       importInfo,
       exportInfo,
       code
@@ -81,27 +79,16 @@ module.exports = class {
   }
   _parseImport() {
     var importInfo = []
+    var dynamicImportInfo = []
     var that = this
     walk.simple(this.ast, {
       ImportDeclaration(node) {
-        let file = node.source.value
-        let type = 'js'
-        let token = that._parseSpecifiers(node.specifiers)
-        if (node.specifiers.length === 0) {
-          if (file.endsWith('.css')) {
-            type = 'css'
-          }
-          if (file.endsWith('.less')) {
-            type = 'less'
-          }
+        let key = node.source.value
 
-        }
-        if (type === 'js' && token.length === 0) {
-          throw new Error('no support "import module"')
-        }
+        let token = that._parseSpecifiers(node.specifiers)
+
         importInfo.push({
-          type,
-          file,
+          key,
           token
         })
 
@@ -112,20 +99,21 @@ module.exports = class {
           if (!that.dynamicImportReplacer) {
             throw new Error('dynamicImportReplacer required')
           }
-          importInfo.push({
-            type: 'djs',
-            file: node.arguments[0].value,
-            token: null
+          dynamicImportInfo.push({
+            key: that.convertKey(node.arguments[0].value),
+            token: []
           })
           that.delPosition.push([node.callee.start, node.callee.end, that.dynamicImportReplacer])
-          if (that.dynamicImportKeyConvert) {
-            that.delPosition.push([node.arguments[0].start, node.arguments[0].end, `"${that.dynamicImportKeyConvert(node.arguments[0].value)}"`])
-          }
+          that.delPosition.push([node.arguments[0].start, node.arguments[0].end, `"${that.convertKey(node.arguments[0].value)}"`])
+
         }
       }
     })
 
-    return importInfo
+    return {
+      importInfo,
+      dynamicImportInfo
+    }
   }
   _parseExport() {
     let exportList = []
@@ -274,7 +262,7 @@ module.exports = class {
           })
         }
         mergeList.push({
-          file: node.source.value,
+          key: node.source.value,
           importToken: importToken,
           exportToken: exportToken
         })

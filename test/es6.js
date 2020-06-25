@@ -7,44 +7,52 @@ describe('fromEs6', () => {
       let code = "import 'a.css'"
       const fromEs6 = new Es6(code)
       let from = fromEs6.parse().importInfo
-      let to = [{ type: 'css', file: 'a.css', token: [] }]
+      let to = [{ key: 'a.css', token: [] }]
+      assert.deepEqual(from, to)
+    })
+    it('import html', () => {
+      let code = "import 'a.html'"
+      const fromEs6 = new Es6(code, { convertKey: key => `abc/${key}` })
+      let from = fromEs6.parse().importInfo
+      let to = [{ key: 'abc/a.html', token: [] }]
+      assert.deepEqual(from, to)
+    })
+    it('import a.js', () => {
+      let code = "import 'a.js'"
+      const fromEs6 = new Es6(code)
+      let from = fromEs6.parse().importInfo
+      let to = [{ key: 'a.js', token: [] }]
       assert.deepEqual(from, to)
     })
     it('import default', () => {
       let code = "import a from 'a.js'"
       const fromEs6 = new Es6(code)
       let from = fromEs6.parse().importInfo
-      let to = [{ type: 'js', file: 'a.js', token: [{ from: 'default', to: 'a' }] }]
+      let to = [{ key: 'a.js', token: [{ from: 'default', to: 'a' }] }]
       assert.deepEqual(from, to)
     })
     it('import *', () => {
       let code = "import * as a from 'a.js'"
       const fromEs6 = new Es6(code)
       let from = fromEs6.parse().importInfo
-      let to = [{ type: 'js', file: 'a.js', token: [{ from: '*', to: 'a' }] }]
+      let to = [{ key: 'a.js', token: [{ from: '*', to: 'a' }] }]
       assert.deepEqual(from, to)
     })
     it('import named key', () => {
       let code = "import {a,b} from 'a.js'"
       const fromEs6 = new Es6(code)
       let from = fromEs6.parse().importInfo
-      let to = [{ type: 'js', file: 'a.js', token: [{ from: 'a', to: 'a' }, { from: 'b', to: 'b' }] }]
+      let to = [{ key: 'a.js', token: [{ from: 'a', to: 'a' }, { from: 'b', to: 'b' }] }]
       assert.deepEqual(from, to)
     })
     it('import named(a as b) key', () => {
       let code = "import {a as b} from 'a.js'"
       const fromEs6 = new Es6(code)
       let from = fromEs6.parse().importInfo
-      let to = [{ type: 'js', file: 'a.js', token: [{ from: 'a', to: 'b' }] }]
+      let to = [{ key: 'a.js', token: [{ from: 'a', to: 'b' }] }]
       assert.deepEqual(from, to)
     })
-    it('import to run file only,throw.', () => {
-      let code = "import 'a.js'"
-      const fromEs6 = new Es6(code)
-      assert.throws(() => {
-        fromEs6.parse()
-      })
-    })
+
   })
   describe('parse export default', () => {
     it('export default a digital', () => {
@@ -146,7 +154,7 @@ describe('fromEs6', () => {
       const fromEs6 = new Es6("export {a} from 'a.js'")
       let { importInfo, exportInfo, code } = fromEs6.parse()
       let to = {
-        importInfo: [{ type: 'js', file: 'a.js', token: [{ from: 'a', to: '_z_0' }] }],
+        importInfo: [{ key: 'a.js', token: [{ from: 'a', to: '_z_0' }] }],
         exportInfo: [{ from: '_z_0', to: 'a' }],
         code: ''
       }
@@ -158,7 +166,7 @@ describe('fromEs6', () => {
       const fromEs6 = new Es6("export {default} from 'a.js'")
       let { importInfo, exportInfo, code } = fromEs6.parse()
       let to = {
-        importInfo: [{ type: 'js', file: 'a.js', token: [{ from: 'default', to: '_z_0' }] }],
+        importInfo: [{ key: 'a.js', token: [{ from: 'default', to: '_z_0' }] }],
         exportInfo: [{ from: '_z_0', to: 'default' }],
         code: ''
       }
@@ -170,7 +178,7 @@ describe('fromEs6', () => {
       const fromEs6 = new Es6("export {a as b} from 'a.js'")
       let { importInfo, exportInfo, code } = fromEs6.parse()
       let to = {
-        importInfo: [{ type: 'js', file: 'a.js', token: [{ from: 'a', to: '_z_0' }] }],
+        importInfo: [{ key: 'a.js', token: [{ from: 'a', to: '_z_0' }] }],
         exportInfo: [{ from: '_z_0', to: 'b' }],
         code: ''
       }
@@ -186,7 +194,7 @@ describe('fromEs6', () => {
     })
   })
   describe('parse dynamic import', () => {
-    it('no replacer ,trhow', () => {
+    it('no replacer ,throw', () => {
       const fromEs6 = new Es6(`let a=1;import('a.js').then(()=>{});`)
       assert.throws(() => {
 
@@ -196,14 +204,16 @@ describe('fromEs6', () => {
     })
     it('replace import with replacer ', () => {
       const fromEs6 = new Es6("let x=1;import('a').then(()=>{})", {
-        dynamicImportKeyConvert: (key) => {
+        convertKey: (key) => {
           return `views/${key}`
-        }, dynamicImportReplacer: `load`
+        },
+        dynamicImportReplacer: `load`
       })
       let from = fromEs6.parse()
       let to = {
         exportInfo: [],
-        importInfo: [{ type: 'djs', file: 'a', token: null }],
+        importInfo: [],
+        dynamicImportInfo: [{ key: 'views/a', token: [] }],
         code: `let x=1;load("views/a").then(()=>{})`
       }
       assert.deepEqual(from, to)
@@ -229,6 +239,7 @@ describe('fromEs6', () => {
       let to = {
         code: '',
         importInfo: [],
+        dynamicImportInfo: [],
         exportInfo: [{ from: 'a1', to: 'b1' }]
       }
       assert.deepEqual(from, to)
@@ -242,13 +253,14 @@ describe('fromEs6', () => {
       let to = {
         code: '',
         importInfo: [{
-          type: 'js',
-          file: 'a.js',
+
+          key: 'a.js',
           token: [
             { from: 'default', to: 'b' },
             { from: 'each', to: 'each' }
           ]
         }],
+        dynamicImportInfo: [],
         exportInfo: []
       }
       assert.deepEqual(from, to)
@@ -259,22 +271,24 @@ describe('fromEs6', () => {
       let to = {
         code: '',
         importInfo: [{
-          type: 'js',
-          file: 'a',
+
+          key: 'a',
           token: [
             { from: 'default', to: 'a' }
           ]
         },
         {
-          type: 'js',
-          file: 'b',
+
+          key: 'b',
           token: [
             { from: 'default', to: 'b' }
           ]
         }],
+        dynamicImportInfo: [],
         exportInfo: []
       }
       assert.deepEqual(from, to)
     })
   })
+
 })
