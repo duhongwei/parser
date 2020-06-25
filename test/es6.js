@@ -129,21 +129,21 @@ describe('fromEs6', () => {
     })
     //"export c" 这种是错误的，不能直接导出一个变量,可以导出一个object
     it('export an object', () => {
-      const fromEs6 = new Es6("export {a}")
+      const fromEs6 = new Es6("let a=1;export {a}")
       let { exportInfo, code } = fromEs6.parse()
       let to = {
         from: [{ from: 'a', to: 'a' }],
-        code: ''
+        code: 'let a=1;'
       }
       assert.deepEqual(exportInfo, to.from)
       assert.equal(code, to.code)
     })
     it('export an object(a as b)', () => {
-      const fromEs6 = new Es6("export {a as b}")
+      const fromEs6 = new Es6("let a=1;export {a as b}")
       let { exportInfo, code } = fromEs6.parse()
       let to = {
         from: [{ from: 'a', to: 'b' }],
-        code: ''
+        code: 'let a=1;'
       }
       assert.deepEqual(exportInfo, to.from)
       assert.equal(code, to.code)
