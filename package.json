@@ -1,6 +1,6 @@
 {
   "name": "@duhongwei/parser",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,8 +21,8 @@
   "license": "ISC",
   "dependencies": {
     "acorn-dynamic-import": "^4.0.0",
-    "acorn": "^6.0.4",
-    "acorn-walk": "^6.1.1"
+    "acorn": "^8.5.0",
+    "acorn-walk": "^8.2.0"
   },
   "devDependencies": {
     "clone": "2.1.2",

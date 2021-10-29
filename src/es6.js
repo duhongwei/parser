@@ -16,7 +16,7 @@ base.Import = () => { }
 module.exports = class {
   constructor(code, opts = {}) {
     //ast里面，raw ,value的不同之外是： 如果是string ,raw是 "'a'",value 是 "a"
-    this.ast = dynamicAcorn.parse(code, { sourceType: 'module' })
+    this.ast = dynamicAcorn.parse(code, {ecmaVersion:'latest',  sourceType: 'module' })
     this.dynamicImportReplacer = opts.dynamicImportReplacer
     this.exportAllCb = opts.exportAllCb
     this.convertKey = opts.convertKey || function (key) { return key }
